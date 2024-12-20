@@ -17,8 +17,7 @@ public class Principal {
     private ConsumoApi consumo = new ConsumoApi();
     private ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey=6585022c";
-    private List<DadosSerie> seriesBuscadas = new ArrayList<>();
+    private final String API_KEY = System.getenv("OMDB_API_KEY");
     private SerieRepository serieRepository;
 
     public Principal(SerieRepository serieRepository) {
@@ -87,8 +86,10 @@ public class Principal {
     }
 
     private void listarSeriesBuscadas() {
+
+        List<Serie> seriesBuscadas = serieRepository.findAll();
+
         seriesBuscadas.stream()
-                .map(Serie::new)
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
     }
