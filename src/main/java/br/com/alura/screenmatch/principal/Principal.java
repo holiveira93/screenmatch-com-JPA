@@ -185,7 +185,7 @@ public class Principal {
         System.out.println("Digite a avaliação mínima: ");
         double avaliacaoMinima = leitura.nextDouble();
 
-        List<Serie> series = serieRepository.findBytotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(maximoTemporadas, avaliacaoMinima);
+        List<Serie> series = serieRepository.encontrarPorMaximoDeTemporadasEAvaliacaoMinima(maximoTemporadas, avaliacaoMinima);
         System.out.println("Series com no máximo " + maximoTemporadas + " e avaliação minima " + avaliacaoMinima);
         series.forEach(System.out::println);
 
