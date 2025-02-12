@@ -1,6 +1,7 @@
 package br.com.alura.screenmatch.repository;
 
 import br.com.alura.screenmatch.model.Categoria;
+import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.model.Serie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,9 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
 //    @Query(value = "Select s from Serie where total_temporadas <= 5 and avaliacao >= 8", nativeQuery = true )
 //    List<Serie> encontrarPorMaximoDeTemporadasEAvaliacaoMinima();
 
-   @Query("select s from Serie s where s.totalTemporadas <= :maximoTemporadas and s.avaliacao >= :avaliacao")
-   List<Serie> encontrarPorMaximoDeTemporadasEAvaliacaoMinima(int maximoTemporadas, Double avaliacao);
+    @Query("SELECT s FROM Serie s WHERE s.totalTemporadas <= :maximoTemporadas and s.avaliacao >= :avaliacao")
+    List<Serie> encontrarPorMaximoDeTemporadasEAvaliacaoMinima(int maximoTemporadas, Double avaliacao);
 
+    @Query("SELECT e FROM Serie s JOIN s.episodios e WHERE e.titulo ILIKE %:trechoEpisodio%")
+    List<Episodio> encontrarPorTrechoEpisodio(String trechoEpisodio);
 }
