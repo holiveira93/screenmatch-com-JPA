@@ -35,6 +35,7 @@ public class Principal {
                 8 - Buscar por temporadas e avaliação
                 9 - Buscar episodios por trecho
                 10 - Buscar top 5 episódios por série
+                11 - Buscar episódios a partir de uma data
                 0 - Sair
                 """;
 
@@ -74,6 +75,9 @@ public class Principal {
                     break;
                 case 10:
                     buscarTop5EpisodiosPorSerie();
+                    break;
+                case 11:
+                    buscarEpisodiosDepoisDeUmaData();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -217,6 +221,21 @@ public class Principal {
             top5EpisodiosPorSerie.forEach(e -> System.out.printf("Série: %s, Temporada: %s, Episódio: %s, Titulo: %s, Avaliação: %s\n", e.getSerie().getTitulo(),
                     e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo(), e.getAvaliacao()));
         }
-
     }
+
+    private void buscarEpisodiosDepoisDeUmaData() {
+        Optional<Serie> serieBuscada = buscarSeriePorTitulo();
+        if(serieBuscada.isPresent()){
+            Serie serie = serieBuscada.get();
+
+            System.out.println("Digite o ano inicial");
+            var anoBuscado = leitura.nextInt();
+
+            List<Episodio> episodiosEncontrados = serieRepository.buscarEpisodiosDepoisDeUmaData(serie, anoBuscado);
+            episodiosEncontrados.forEach(e -> System.out.printf("Série: %s, Temporada: %s, Episódio: %s, Titulo: %s, Data de lançamento: %s\n", e.getSerie().getTitulo(),
+                    e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo(), e.getDataLancamento()));
+        }
+    }
+
+
 }
