@@ -34,6 +34,7 @@ public class Principal {
                 7 - Buscar series por categoria
                 8 - Buscar por temporadas e avaliação
                 9 - Buscar episodios por trecho
+                10 - Buscar top 5 episódios por série
                 0 - Sair
                 """;
 
@@ -70,6 +71,9 @@ public class Principal {
                     break;
                 case 9:
                     buscarEpisodioPorTrecho();
+                    break;
+                case 10:
+                    buscarTop5EpisodiosPorSerie();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -140,7 +144,7 @@ public class Principal {
                 .forEach(System.out::println);
     }
 
-    private void buscarSeriePorTitulo() {
+    private Optional<Serie> buscarSeriePorTitulo() {
         System.out.println("Escolha uma série: ");
         var nomeSerie = leitura.nextLine();
 
@@ -152,6 +156,8 @@ public class Principal {
         }else {
             System.out.println("Série não encontrada!");
         }
+
+        return serieBuscada;
     }
 
     private void buscarSeriesPorAtor() {
@@ -201,5 +207,16 @@ public class Principal {
         System.out.println("Episódios com o trecho '" + trechoEpisodio +"' no titulo");
         episodiosEncontrados.forEach(e -> System.out.printf("Série: %s, Temporada: %s, Episódio: %s, Titulo: %s\n", e.getSerie().getTitulo(),
                 e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
+    }
+
+    private void buscarTop5EpisodiosPorSerie() {
+        Optional<Serie> serieBuscada = buscarSeriePorTitulo();
+        if(serieBuscada.isPresent()){
+            Serie serie = serieBuscada.get();
+            List<Episodio> top5EpisodiosPorSerie = serieRepository.top5EpisodiosPorSerie(serie);
+            top5EpisodiosPorSerie.forEach(e -> System.out.printf("Série: %s, Temporada: %s, Episódio: %s, Titulo: %s, Avaliação: %s\n", e.getSerie().getTitulo(),
+                    e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo(), e.getAvaliacao()));
+        }
+
     }
 }
