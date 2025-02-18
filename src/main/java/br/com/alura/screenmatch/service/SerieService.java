@@ -58,4 +58,11 @@ public class SerieService {
         }
         return null;
     }
+
+    public List<EpisodioDTO> obterTemporadaPorNumero(Long id, Long temporada) {
+        List<Episodio> episodios = serieRepository.findByIdAndEpisodiosTemporada(id, temporada);
+        return episodios.stream()
+                .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
+                .collect(Collectors.toList());
+    }
 }
