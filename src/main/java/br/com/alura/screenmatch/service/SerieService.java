@@ -6,7 +6,6 @@ import br.com.alura.screenmatch.model.Categoria;
 import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.model.Serie;
 import br.com.alura.screenmatch.repository.SerieRepository;
-import kotlin.OptIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,22 +20,15 @@ public class SerieService {
     private SerieRepository serieRepository;
 
     public List<SerieDTO> obterSeries(){
-        return converteDados(serieRepository.findAll());
+        return converteDadosSerie(serieRepository.findAll());
     }
 
     public List<SerieDTO> obterTop5Series() {
-        return converteDados(serieRepository.findDistinctTop5ByOrderByAvaliacaoDesc());
+        return converteDadosSerie(serieRepository.findDistinctTop5ByOrderByAvaliacaoDesc());
     }
 
     public List<SerieDTO> obterLancamentos() {
-        return converteDados(serieRepository.encontrarEpisodiosMaisRecentes());
-    }
-
-    private List<SerieDTO> converteDados(List<Serie> series){
-        return series.stream()
-                .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(), s.getAvaliacao(),
-                        s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
-                .collect(Collectors.toList());
+        return converteDadosSerie(serieRepository.encontrarEpisodiosMaisRecentes());
     }
 
     public SerieDTO obterPorId(Long id) {
@@ -62,14 +54,30 @@ public class SerieService {
 
     public List<EpisodioDTO> obterTemporadaPorNumero(Long id, Long temporada) {
         List<Episodio> episodios = serieRepository.findByIdAndEpisodiosTemporada(id, temporada);
-        return episodios.stream()
-                .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
-                .collect(Collectors.toList());
+        return converteDadosEpisodio(episodios);
     }
 
     public List<SerieDTO> obterSeriePorGenero(String genero) {
         Categoria categoria = Categoria.fromPortugues(genero);
         List<Serie> series = serieRepository.findByGenero(categoria);
-        return converteDados(series);
+        return converteDadosSerie(series);
+    }
+
+    public List<EpisodioDTO> obterTop5EpisodiosPorSerie(Long id) {
+        List<Episodio> episodios = serieRepository.obterTop5EpisodiosPorSerie(id);
+            return converteDadosEpisodio(episodios);
+    }
+
+    private List<SerieDTO> converteDadosSerie(List<Serie> series){
+        return series.stream()
+                .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(), s.getAvaliacao(),
+                        s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
+                .collect(Collectors.toList());
+    }
+
+    private List<EpisodioDTO> converteDadosEpisodio(List<Episodio> episodios){
+        return episodios.stream()
+                .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
+                .collect(Collectors.toList());
     }
 }
